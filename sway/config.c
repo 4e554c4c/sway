@@ -950,7 +950,7 @@ static void invoke_swaybar(struct bar_config *bar) {
 
 			close(filedes[1]);
 			execvp(cmd[0], cmd);
-			_exit(EXIT_SUCCESS);
+			_exit(EXIT_FAILURE);
 		} else {
 			// run custom swaybar
 			int len = strlen(bar->swaybar_command) + strlen(bar->id) + 5;
@@ -998,9 +998,6 @@ static void terminate_swaybar(pid_t pid) {
 	int ret = kill(pid, SIGTERM);
 	if (ret != 0) {
 		sway_log(L_ERROR, "Unable to terminate swaybar [pid: %d]", pid);
-	} else {
-		int status;
-		waitpid(pid, &status, 0);
 	}
 }
 
@@ -1008,9 +1005,6 @@ void terminate_swaybg(pid_t pid) {
 	int ret = kill(pid, SIGTERM);
 	if (ret != 0) {
 		sway_log(L_ERROR, "Unable to terminate swaybg [pid: %d]", pid);
-	} else {
-		int status;
-		waitpid(pid, &status, 0);
 	}
 }
 

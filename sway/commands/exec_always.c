@@ -1,6 +1,5 @@
 #define _XOPEN_SOURCE 500
 #include <string.h>
-#include <sys/wait.h>
 #include <unistd.h>
 #include "sway/commands.h"
 #include "sway/config.h"
@@ -69,7 +68,6 @@ struct cmd_results *cmd_exec_always(int argc, char **argv) {
 	}
 	close(fd[0]);
 	// cleanup child process
-	wait(0);
 	swayc_t *ws = swayc_active_workspace();
 	if (*child > 0 && ws) {
 		sway_log(L_DEBUG, "Child process created with pid %d for workspace %s", *child, ws->name);

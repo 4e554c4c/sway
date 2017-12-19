@@ -39,8 +39,14 @@ void sway_terminate(int exit_code) {
 }
 
 void sig_handler(int signal) {
-	close_views(&root_container);
-	sway_terminate(EXIT_SUCCESS);
+	switch (signal) {
+	case SIGCHLD:
+		while(waitpid(-1, NULL, WNOHANG) > 0) {}
+		break;
+	case SIGTERM:
+		close_views(&root_container);
+		sway_terminate(EXIT_SUCCESS);
+	}
 }
 
 static void wlc_log_handler(enum wlc_log_type type, const char *str) {
@@ -459,6 +465,9 @@ int main(int argc, char **argv) {
 #endif
 	// handle SIGTERM signals
 	signal(SIGTERM, sig_handler);
+
+	// reap children
+	signal(SIGCHLD, sig_handler);
 
 	// prevent ipc from crashing sway
 	signal(SIGPIPE, SIG_IGN);
